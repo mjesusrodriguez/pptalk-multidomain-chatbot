@@ -1,0 +1,249 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Restaurant Info API",
+    "description": "Restaurant information for IA slot filling",
+    "termsOfService": "http://miapp.com/terms.php",
+    "contact": {
+      "name": "María Jesús Rodríguez",
+      "url": "https://directorio.ugr.es/static/PersonalUGR/*/show/8cbe900fb866f9ac9f399915a132dad3",
+      "email": "mjesusrodriguez@ugr.es"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5003",
+      "description": "SwaggerHub API Auto Mocking"
+    }
+  ],
+  "tags": [
+    {
+      "name": "italian, italianfood"
+    }
+  ],
+  "paths": {
+    "/bookrestaurant": {
+      "get": {
+        "description": "Returns a booking for the restaurant \"La Mafia\"",
+        "operationId": "restaurantBooking",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "costumer name",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-custom-question": "What is the name of the reservation costumer?"
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "description": "phone number of the customer.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-custom-question": "Tell me your phone number in order to confirm the reservation, please."
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Date of the booking.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-custom-question": "What day do you want the reservation for?"
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "description": "Time of the booking.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-custom-question": "What time do you want the reservation for?"
+          },
+          {
+            "name": "diners",
+            "in": "query",
+            "description": "people for the booking",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-custom-question": "For how many diners is the booking?"
+          },
+          {
+            "name": "pricerange",
+            "in": "query",
+            "description": "pricerange desired by the user",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "cheap",
+              "enum": [
+                "moderate",
+                "expensive",
+                "cheap"
+              ],
+              "value": "cheap"
+            },
+            "x-custom-question": "What is the pricerange of the restaurant you are looking for?",
+          },
+          {
+            "name": "food",
+            "in": "query",
+            "description": "type of food desired by the user",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "example": "italian",
+              "type": "string",
+              "enum": [
+                "afghan",
+                "african",
+                "afternoon tea",
+                "asian oriental",
+                "australasian",
+                "australian",
+                "austrian",
+                "barbeque",
+                "basque",
+                "belgian",
+                "bistro",
+                "brazilian",
+                "british",
+                "canapes",
+                "cantonese",
+                "caribbean",
+                "catalan",
+                "chinese",
+                "christmas",
+                "corsica",
+                "creative",
+                "crossover",
+                "cuban",
+                "danish",
+                "eastern european",
+                "english",
+                "eritrean",
+                "european",
+                "french",
+                "fusion",
+                "gastropub",
+                "german",
+                "greek",
+                "halal",
+                "hungarian",
+                "indian",
+                "indonesian",
+                "international",
+                "irish",
+                "italian",
+                "jamaican",
+                "japanese",
+                "korean",
+                "kosher",
+                "latin american",
+                "lebanese",
+                "light bites",
+                "malaysian",
+                "mediterranean",
+                "mexican",
+                "middle eastern",
+                "modern american",
+                "modern eclectic",
+                "modern european",
+                "modern global",
+                "molecular gastronomy",
+                "moroccan",
+                "new zealand",
+                "north african",
+                "north american",
+                "north indian",
+                "northern european",
+                "panasian",
+                "persian",
+                "polish",
+                "polynesian",
+                "portuguese",
+                "romanian",
+                "russian",
+                "scandinavian",
+                "scottish",
+                "seafood",
+                "singaporean",
+                "south african",
+                "south indian",
+                "spanish",
+                "sri lankan",
+                "steakhouse",
+                "swedish",
+                "swiss",
+                "thai",
+                "the americas",
+                "traditional",
+                "turkish",
+                "tuscan",
+                "unusual",
+                "vegetarian",
+                "venetian",
+                "vietnamese",
+                "welsh",
+                "world"
+              ]
+            },
+            "x-custom-question": "Which is the kind of food you want to eat?"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "{\"message\":\"The phone number is: 675151146\"}"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "url not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "{\"message\":\"Error: The url or request is not found\"}"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {}
+}

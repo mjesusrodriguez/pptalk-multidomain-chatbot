@@ -1,0 +1,208 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+main {
+  min-height: 100vh;
+  background: #B0E0E6 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.glass {
+  background: white !important;
+  min-height: 80vh;
+  width: 60%;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.25)
+  ) !important;
+  border-radius: 2rem;
+  z-index: 20;
+  backdrop-filter: blur(2rem);
+  display: flex;
+  animation: transitionIn 1s;
+}
+
+.circle1,
+.circle2 {
+  background: white;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.2)
+  ) !important;
+  height: 20rem;
+  width: 20rem;
+  position: absolute;
+  border-radius: 50%;
+  animation: rotateIn 2s ease-out;
+}
+
+.circle1 {
+  top: 3%;
+  left: 10%;
+}
+
+.circle2 {
+  bottom: 3%;
+  right: 10%;
+}
+
+.dashboard {
+  height: 80vh;
+  width: 30%;
+  border-radius: 2rem 0 0 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.2)
+  ) !important;
+}
+
+.bot {
+  height: 125px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.bot img {
+  animation: bot_rotate 1s ease-out;
+}
+
+.bot h3 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+}
+.bot p {
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+}
+
+.chat-section {
+  height: 80vh;
+  width: 70%;
+  /* background: aqua; */
+  border-radius: 0 2rem 2rem 0;
+}
+.chat-view {
+  padding: 1rem;
+  max-height: 85%;
+  margin-top: 20px;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.chat-view::-webkit-scrollbar {
+  display: none;
+}
+.bot-container,
+.your-container {
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.bot-msg {
+  float: left;
+  background-color: #00008B;
+  color: #fff;
+  border-radius: 0px 20px 20px 20px;
+  padding: 15px;
+  width: 40%;
+  text-align: left;
+  margin-top: 5px;
+}
+
+.your-msg {
+  margin-top: 5px;
+  float: right;
+  height: 100%;
+  width: auto;
+  background-color: #008B8B;
+  color: white;
+  border-radius: 20px 0px 20px 20px;
+  padding: 15px;
+  width: 40%;
+  text-align: right;
+}
+
+.type-section {
+  position: absolute;
+  bottom: 2%;
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.type-section input {
+  border: none;
+  outline: none;
+  width: 100%;
+  margin: 0 30px;
+  height: 2.2rem;
+  border-radius: 5rem;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.5)
+  ) !important;
+  padding: 0 20px;
+}
+
+@keyframes transitionIn {
+  from {
+    opacity: 0;
+    transform: rotateX(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotateX(0);
+  }
+}
+
+@keyframes rotateIn {
+  from {
+    opacity: 0.3;
+    transform: rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(720deg);
+  }
+}
+
+@keyframes bot_rotate {
+  from {
+    opacity: 0;
+    transform: rotate(0);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Restaurant Information API",
+    "description": "Restaurant information for Cambridge Restaurant based on Camrest Dataset",
+    "termsOfService": "http://miapp.com/terms.php",
+    "contact": {
+      "name": "María Jesús Rodríguez",
+      "url": "https://directorio.ugr.es/static/PersonalUGR/*/show/8cbe900fb866f9ac9f399915a132dad3",
+      "email": "mjesusrodriguez@ugr.es"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5004",
+      "description": "Localhost on port 5004"
+    }
+  ],
+  "tags": [
+    {
+      "name": "italian, italianfood"
+    }
+  ],
+  "paths": {
+    "/bookrestaurant": {
+      "get": {
+        "description": "Returns a booking for the restaurant \"La Mafia\"",
+        "operationId": "restaurantBooking",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "costumer name",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-custom-question": "What is the name of the reservation costumer?"
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "description": "phone number of the customer.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-custom-question": "Tell me your phone number in order to confirm the reservation, please."
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Date of the booking.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-custom-question": "What day do you want the reservation for?"
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "description": "Time of the booking.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-custom-question": "What time do you want the reservation for?"
+          },
+          {
+            "name": "diners",
+            "in": "query",
+            "description": "people for the booking",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-custom-question": "For how many diners is the booking?"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "{\"message\":\"The phone number is: 675151146\"}"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "url not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "{\"message\":\"Error: The url or request is not found\"}"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {}
+}

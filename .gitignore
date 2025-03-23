@@ -1,0 +1,23 @@
+# Ignorar toda la carpeta input
+input/
+
+#Ignorar toda la carpeta model
+model/
+
+# Ignorar archivos de macOS
+.DS_Store
+
+# Ignorar archivos y carpetas de configuración de IDEs
+.idea/
+.vscode/
+*.iml
+
+# Ignorar archivos compilados de Python
+__pycache__/
+*.pyc
+
+# Ignorar entornos virtuales
+venv/
+ENV/
+env/
+.env

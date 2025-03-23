@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./static/style.css">
+    <title>Chatbot for Restaurant Reservation</title>
+</head>
+<body>
+    <main>
+        <section class="glass">
+            <div class="dashboard">
+                <div class="bot">
+                    <img src="./static/bot.png" alt="bot" height="80px" width="80px">
+                    <!--<h3>I'm LT</h3>
+                    <p>Little Things are Coming</p>-->
+                </div>
+            </div>
+            <div class="chat-section">
+                <div class="chat-view">
+                        <div class="bot-container">
+                            <div class="bot-msg">Hi! I am Your Assist. Want some help? I cant help you with Restaurant Booking.</div>
+                        </div>
+                </div>
+                <div class="type-section">
+                    <input id="my-text" class = "input-field" type="text" name="msg">
+                </div>
+            </div>
+        </section>
+        <div class="circle1"></div>
+        <div class="circle2"></div>
+    </main>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://smtpjs.com/smtp.js"></script>
+    <script>
+      let arrayAnswer = [];
+      let arrayQuestions = [];
+      currentQuestion = 0;
+
+      function getBotResponse(){
+          var myText = $("#my-text").val();
+          var userBubble = '<div class="your-container"><div class="your-msg">'+ myText +'</div></div>';
+          $("#my-text").val("");
+          $(".chat-view").append(userBubble);
+          $(".chat-view").stop().animate({scrollTop: $(".chat-view")[0].scrollHeight}, 1000);
+
+          $.get("/chatbot", {input: myText }).done(function(data){
+
+              var botBubble = '<div class="bot-container"><div class="bot-msg"><p>I need to know some extra information!</p></div></div>';
+
+              Object.values(data).forEach(val => {
+                  if (val!=''){
+                      botBubble = botBubble + '<div class="bot-container"><div class="bot-msg">' + val + '</div></div>';
+                  }
+              });
+
+              $(".chat-view").append(botBubble);
+          });
+      }
+
+      async function getQuestions(prompt){
+          await $.get("/chatbot", {input: prompt}).done(function(data){
+              console.log(data);
+              Object.values(data).forEach(val => {
+                  if (val!=''){
+                    arrayQuestions.push(val);
+                  }
+              });
+          })
+          .fail(function() {
+            var botBubble = '<div class="bot-container"><div class="bot-msg"><p>Can you repeat me the question, please?</p></div></div>';
+            $(".chat-view").append(botBubble);
+          });
+      }
+
+      function showQuestion(number){
+        var botBubble = '<div class="bot-container"><div class="bot-msg"><p>'+arrayQuestions[number]+'</p></div></div>';
+        $(".chat-view").append(botBubble);
+      }
+
+      $("#my-text").keypress(async function(e){
+          console.log("Longitud del vector de preguntas: "+arrayQuestions.length);
+          console.log("Longitud del vector de respuestas: "+arrayAnswer.length);
+          if (e.which == 13){
+              var myText = $("#my-text").val();
+              var userBubble = '<div class="your-container"><div class="your-msg">'+ myText +'</div></div>';
+              $("#my-text").val("");
+              $(".chat-view").append(userBubble);
+              $(".chat-view").stop().animate({scrollTop: $(".chat-view")[0].scrollHeight}, 1000);
+
+              if (arrayQuestions.length === 0){
+                  //El vector de preguntas está vacío, entiendo que es otro prompt o el inicial
+                  //Así que llamo al servicio para coger las preguntas
+                  currentQuestion = 0;
+
+                  /*
+                  var empty = '<div class="bot-container"><div class="bot-msg">Hi! I am Your Assist. Want some help? I cant help you with Restaurant Booking.</div></div>';
+                  $(".chat-view").data(empty);
+                   */
+
+                  await getQuestions(myText);
+                  console.log("PREGUNTAS: "+arrayQuestions);
+
+                  //No hay preguntas pero hay respuestas, por lo que no es el promp inicial así que las envío y reseteo el vector de respuestas
+                  if (arrayAnswer.length !==0){
+                      var botBubble = '<div class="bot-container"><div class="bot-msg"><p>Your booking have been made succesfully. Thank you!</p></div></div>';
+                      $(".chat-view").append(botBubble);
+                      //Mando email con reserva a admin y con reserva satisfactoria a usuario.
+                      arrayAnswer.forEach(function(entry) {
+                          console.log(entry);
+                      });
+
+                      //Reset a los array
+                      arrayAnswer = [];
+                      arrayQuestions = [];
+                  }
+                  else{
+                      showQuestion(0);
+                      arrayQuestions.shift();
+                  }
+              }
+              else{
+                  //El vector de preguntas no está vacío, por lo que guardo la respuesta y continúo a la siguiente pregunta
+                  showQuestion(0);
+                  arrayAnswer.push([arrayQuestions[0], myText]);
+                  //currentQuestion++;
+                  arrayQuestions.shift();
+              }
+              //getBotResponse();
+          }
+    });
+    </script>
+</body>
+</html>

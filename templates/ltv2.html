@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./static/style.css">
+    <link rel="stylesheet" href="./static/devices.min.css">
+    <link rel="stylesheet" href="./static/material-design-iconic-font.min.css">
+
+    <title>Chatbot for Restaurant Reservation</title>
+</head>
+<body>
+    <main>
+        <div class="page">
+            <div class="marvel-device nexus5">
+                <div class="top-bar"></div>
+                <div class="sleep"></div>
+                <div class="volume"></div>
+                <div class="camera"></div>
+                <div class="screen">
+                    <div class="screen-container">
+                        <div class="status-bar">
+                          <div class="time"></div>
+                          <div class="battery">
+                            <i class="zmdi zmdi-battery"></i>
+                          </div>
+                          <div class="network">
+                            <i class="zmdi zmdi-network"></i>
+                          </div>
+                          <div class="wifi">
+                            <i class="zmdi zmdi-wifi-alt-2"></i>
+                          </div>
+                          <div class="star">
+                            <i class="zmdi zmdi-star"></i>
+                          </div>
+                        </div>
+                        <div class="chat">
+                            <div class="chat-container">
+                                <div class="user-bar">
+                                  <div class="back">
+                                    <i class="zmdi zmdi-arrow-left"></i>
+                                  </div>
+                                  <div class="avatar">
+                                    <img src="./static/bot.png" alt="Avatar">
+                                  </div>
+                                  <div class="name">
+                                    <span>Chat-PPT</span>
+                                    <span class="status">Your restaurant booking assistant</span>
+                                  </div>
+                                </div>
+                                <div class="chat-section">
+                                    <div class="chat-view">
+                                            <div class="bot-container">
+                                                <div class="bot-msg">Hello! Want some help? I can help you with Restaurant Booking.</div>
+                                            </div>
+                                    </div>
+                                    <div class="type-section">
+                                        <div class="emoji">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" id="smiley" x="3147" y="3209"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.153 11.603c.795 0 1.44-.88 1.44-1.962s-.645-1.96-1.44-1.96c-.795 0-1.44.88-1.44 1.96s.645 1.965 1.44 1.965zM5.95 12.965c-.027-.307-.132 5.218 6.062 5.55 6.066-.25 6.066-5.55 6.066-5.55-6.078 1.416-12.13 0-12.13 0zm11.362 1.108s-.67 1.96-5.05 1.96c-3.506 0-5.39-1.165-5.608-1.96 0 0 5.912 1.055 10.658 0zM11.804 1.01C5.61 1.01.978 6.034.978 12.23s4.826 10.76 11.02 10.76S23.02 18.424 23.02 12.23c0-6.197-5.02-11.22-11.216-11.22zM12 21.355c-5.273 0-9.38-3.886-9.38-9.16 0-5.272 3.94-9.547 9.214-9.547a9.548 9.548 0 0 1 9.548 9.548c0 5.272-4.11 9.16-9.382 9.16zm3.108-9.75c.795 0 1.44-.88 1.44-1.963s-.645-1.96-1.44-1.96c-.795 0-1.44.878-1.44 1.96s.645 1.963 1.44 1.963z" fill="#7d8489"/></svg>
+                                        </div>
+                                        <input id="my-text" class="input-msg" type="text" name="msg" placeholder="Type a message">
+                                        <div class="photo">
+                                          <i class="zmdi zmdi-camera"></i>
+                                        </div>
+                                        <button class="send">
+                                            <div class="circle">
+                                              <i class="zmdi zmdi-mail-send"></i>
+                                            </div>
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://smtpjs.com/smtp.js"></script>
+    <script>
+      let arrayAnswer = [];
+      let arrayQuestions = [];
+      let questionsDict = {};
+      let filledParams = {};
+      currentQuestion = 0;
+      let beginning = 0;
+      let questionKey = "";
+      let userEmail = ""
+      let email = 0;
+      let service_id = ""
+      let user_intent = ""
+
+      async function getQuestions(prompt){
+
+          await $.get("/chatbot", {input: prompt}).done(function(data){
+              Object.values(data["questions"]).forEach(val => {
+                  if (val!=''){
+                    arrayQuestions.push(val);
+                  }
+              });
+
+              service_id = data["service_id"];
+              console.log("servicio: "+service_id)
+
+              user_intent = data["intent"];
+
+              //Proceso un diccionario con las preguntas
+              Object.keys(data["questions"]).forEach(function(key) {
+                    var question = data["questions"][key];
+                    questionsDict[key] = question;
+                });
+
+              //Proceso un diccionario con los parámetros rellenos.
+               Object.keys(data["filled"]).forEach(function(key) {
+                    var filled = data["filled"][key];
+                    filledParams[key] = filled;
+                });
+              /*EJEMPLO PARA INSERTAR filledParams[0]['pricerange'] = 'hola';*/
+          })
+          .fail(function() {
+            var botBubble = '<div class="bot-container"><div class="bot-msg"><p>I can not help you with that. Can you repeat me the question, please?</p></div></div>';
+            $(".chat-view").append(botBubble);
+          });
+      }
+
+      function showQuestion(number){
+        var botBubble = '<div class="bot-container"><div class="bot-msg"><p>'+arrayQuestions[number]+'</p></div></div>';
+        $(".chat-view").append(botBubble);
+      }
+
+      $("#my-text").keypress(async function(e){
+          if (e.which == 13){
+
+              //Muestro el prompt del usuario por pantalla.
+              var myText = $("#my-text").val();
+              var userBubble = '<div class="your-container"><div class="your-msg">'+ myText +'</div></div>';
+              $("#my-text").val("");
+              $(".chat-view").append(userBubble);
+              $(".chat-view").stop().animate({scrollTop: $(".chat-view")[0].scrollHeight}, 1000);
+
+              console.log("Longitud del vector de preguntas: "+arrayQuestions.length);
+              console.log("Longitud del vector de respuestas: "+arrayAnswer.length);
+
+              //El vector de preguntas está vacío
+              if (arrayQuestions.length === 0){
+                  console.log("Vector de preguntas vacío");
+
+                  //No hay preguntas pero hay respuestas, entiendo que ya están todos los slots para poder enviarse al server.
+                  if (arrayAnswer.length !==0){
+                      console.log("Respuestas listas para mandar");
+
+                      //No ha dado el email
+                      if(email === 0) {
+                          var botBubble = '<div class="bot-container"><div class="bot-msg"><p>Please, give me a contact email to confirm your booking.</p></div></div>';
+                          $(".chat-view").append(botBubble);
+
+                          //Inserto la última respuesta del usuario
+                          arrayAnswer.push([arrayQuestions[0], myText]);
+                          console.log("Insertada la respuesta:  " + myText);
+
+                          //Meto la respuesta en el diccionario de parámetros.
+                          filledParams[questionKey] = myText;
+                          console.log("Insertado el parámetro:  " + questionKey);
+
+                          email = 1;
+                      }
+                      //Si ha dado el email
+                      else{
+                          var botBubble = '<div class="bot-container"><div class="bot-msg"><p>Thank you! See you soon.</p></div></div>';
+                          $(".chat-view").append(botBubble);
+
+                          userEmail = myText;
+                          console.log("userEmail:  " + myText);
+
+                          //POST de los parámetros rellenos al server, de momento muestro en el log.
+                          for (var key in filledParams) {
+                            if (filledParams.hasOwnProperty(key)) {
+                                var value = filledParams[key];
+                                console.log('Key:', key, 'Value:', value);
+                            }
+                          }
+
+                          const requestData = {
+                            email: userEmail,
+                            service: service_id,
+                            intent: user_intent,
+                            filledSlots: filledParams
+
+                          };
+
+                          const apiUrl = '/serviceinfo/data';
+                          // Make the POST request to the API
+                          fetch(apiUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(requestData),
+                          })
+                          .then(response => response.json())
+                          .then(responseData => {
+                                console.log('Response Data:', responseData);
+                          })
+                          .catch(error => {
+                                console.error('Error:', error);
+                          });
+
+                          //Reset a los vectores y diccionarios
+                          arrayAnswer = [];
+                          arrayQuestions = [];
+                          questionsDict = {};
+                          filledParams = {};
+                          questionKey = "";
+                          email = 0;
+                          userEmail = "";
+                      }
+                  }
+                  //No hay preguntas pero no hay respuestas, hago la llamada al servicio.
+                  else{
+                      await getQuestions(myText);
+
+                      console.log("PREGUNTAS: "+arrayQuestions);
+
+                      console.log("Muestro la primera pregunta");
+                      showQuestion(0);
+
+                      //Cojo la key de la pregunta para guardar el parámetro
+                      var keysArray = Object.keys(questionsDict);
+                      console.log("Muestro questiondic" + questionsDict);
+                      questionKey = keysArray[0];
+                      console.log("Cojo la clave: "+questionKey);
+
+                      //Elimino del vector de preguntas
+                      arrayQuestions.shift();
+
+                      arrayAnswer.push(["initial prompt", myText]);
+                  }
+
+              }
+              //Hay preguntas, por lo que la vamos mostrando
+              else{
+                  console.log("Muestro Pregunta");
+                  showQuestion(0);
+
+                  arrayAnswer.push([arrayQuestions[0], myText]);
+                  console.log("Insertada la respuesta:  "+myText);
+
+                  //Meto la respuesta en el diccionario de parámetros.
+                  filledParams[questionKey] = myText;
+                  console.log("Insertado el parámetro:  "+questionKey);
+
+                  //Borro esa pregunta del diccionario de preguntas y del vector de preguntas
+                  if (questionsDict.hasOwnProperty(questionKey)) {
+                        delete questionsDict[questionKey];
+                        console.log('Property deleted:', questionKey);
+                  } else {
+                        console.log('Property not found:', questionKey);
+                  }
+
+                  //Cojo la key de la pregunta para guardar el parámetro
+                  var keysArray = Object.keys(questionsDict);
+                  questionKey = keysArray[0];
+                  console.log("Cojo la clave: "+questionKey);
+
+                  arrayQuestions.shift();
+              }
+          }
+    });
+    </script>
+</body>
+</html>
